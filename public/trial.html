@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Add a GeoJSON line</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js"></script>
+<style>
+body { margin: 0; padding: 0; }
+#map { position: absolute; top: 0; bottom: 0; width: 50%; }
+</style>
+</head>
+<body>
+<div id="map"></div>
+<button id='btn'>CLICKMECLICKMECLICKMECLICKMECLICKMECLICKMECLICKMECLICKME</button>
+<script>
+    let b = document.getElementById('btn');
+    b.addEventListener('click',()=>{
+
+        fetch(url).then(resp=>resp.json()).then(json=>{
+    let coordinates = json.routes[0].geometry.coordinates;
+    // if(map.getSource){
+    //     map.removeLayer('route');
+    //     map.removeSource('route');
+    // }
+    map.addSource('route', {
+'type': 'geojson',
+'data': {
+'type': 'Feature',
+'properties': {},
+'geometry': {
+'type': 'LineString',
+'coordinates': coordinates
+}
+}
+});
+map.addLayer({
+'id': 'route',
+'type': 'line',
+'source': 'route',
+'layout': {
+'line-join': 'round',
+'line-cap': 'round'
+},
+'paint': {
+'line-color': '#888',
+'line-width': 8
+}
+});
+})
+console.log('new route')
+console.log(map.getSource('route'))
+    })
+	mapboxgl.accessToken = 'pk.eyJ1IjoiYXJ6eSIsImEiOiJja284d25iODAyNm1oMnJtYjVnZmllaG1zIn0.P8siHAbm84-8l4B0b723qg';
+var map = new mapboxgl.Map({
+container: 'map',
+style: 'mapbox://styles/mapbox/streets-v11',
+center: [-122.486052, 37.830348],
+zoom: 15
+});
+var end = [-73.9896416, 40.7410592];
+var start = [-73.8891016, 40.7410592];
+var url = 'https://api.mapbox.com/directions/v5/mapbox/cycling/' + start[0] + ',' + start[1] + ';' + end[0] + ',' + end[1] + '?steps=true&geometries=geojson&access_token=' + mapboxgl.accessToken;
+
+</script>
+ 
+</body>
+</html>
